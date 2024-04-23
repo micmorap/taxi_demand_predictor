@@ -43,37 +43,34 @@ def validate_raw_data(rides: pd.DataFrame, year: int, month: int) -> pd.DataFram
     Return:
         DataFrame saved, transformed and validated.
     """    
-    rides = pd.read_parquet(f"{RAW_DATA_DIR}/rides_{year}-{month:02}.parquet")
-    rides.head(5)
-    rides = rides[['tpep_pickup_datetime', 'PULocationID']]
-    
-    rides.rename(columns={
-        'tpep_pickup_datetime': 'pickup_datetime',
-        'PULocationID': 'pickup_location_id',
-    }, inplace=True)
-
-    rides.head(5)
-    
     year_month_start_limit = f"{year}-{month:02d}-01"
-    year_month_final_limit = f"{year}-{month+1:02d}-01"
+    year_month_final_limit = f'{year}-{month+1:02d}-01' if month < 12 else f'{year+1}-01-01'
 
     rides = rides[rides.pickup_datetime >= year_month_start_limit]
     rides = rides[rides.pickup_datetime < year_month_final_limit]
     
-    rides.pickup_datetime.describe()
-    rides.to_parquet(f"../data/transformed/validated_rides_{year}-{month:02d}.parquet")
-
     return rides
 
 
 def add_missing_slots(agg_rides: pd.DataFrame) -> pd.DataFrame:
-    
-    location_ids = agg_rides['pickup_location_id'].unique()
-    full_range = pd.date_range(
-        agg_rides['pickup_hour'].min(), agg_rides['pickup_hour'].max(), freq='H')
-    output = pd.DataFrame()
-    for location_id in tqdm(location_ids):
+    """
+    Aim: Add the respective dates with zero rides and add to monthly dataframe.
 
+    Args:
+        rides (Dataframe): Dataset required to rename columns and validate date ranges.
+        year (integer): Required year to download info.
+        month (integer): Required month to download info.
+    
+    Return:
+        DataFrame completely saved and fulfilled with rides and non-rides per day and hour.    
+    """
+    location_ids = agg_rides['pickup_location_id'].unique()
+    
+    full_range = pd.date_range(agg_rides['pickup_hour'].min(), agg_rides['pickup_hour'].max(), freq='H')
+    
+    output = pd.DataFrame()
+    
+    for location_id in tqdm(location_ids):
         # keep only rides for this 'location_id'
         agg_rides_i = agg_rides.loc[agg_rides.pickup_location_id == location_id, ['pickup_hour', 'rides']]
             
