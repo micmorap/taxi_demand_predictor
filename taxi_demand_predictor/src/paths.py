@@ -23,5 +23,3 @@ if not Path(MODELS_DIR).exists():
 
 if not Path(DATA_CACHE_DIR).exists():
     os.mkdir(DATA_CACHE_DIR)
-
-print(RAW_DATA_DIR)    
