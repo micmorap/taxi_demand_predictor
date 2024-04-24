@@ -14,6 +14,8 @@ plotly = "^5.18.0"
 pandas = "^2.2.2"
 tqdm = "^4.66.2"
 plotly-express = "^0.4.1"
+jupyterlab = "^4.1.6"
+numpy = "^1.26.4"
 
 
 [build-system]
