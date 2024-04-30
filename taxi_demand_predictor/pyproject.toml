@@ -6,7 +6,7 @@ authors = ["Michael Andres Mora P <michael.morapp@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.9,<3.11"
 jupyter = "^1.0.0"
 requests = "^2.31.0"
 pyarrow = "^14.0.2"
@@ -20,6 +20,7 @@ scikit-learn = "^1.4.2"
 xgboost = "^2.0.3"
 lightgbm = "^4.3.0"
 optuna = "^3.6.1"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
