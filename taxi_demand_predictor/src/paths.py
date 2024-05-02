@@ -9,6 +9,8 @@ DATA_CACHE_DIR = PARENT_DIR / 'data' / 'cache'
 
 MODELS_DIR = PARENT_DIR / 'models'
 
+print(PARENT_DIR)
+
 if not Path(DATA_DIR).exists():
     os.mkdir(DATA_DIR)
 
