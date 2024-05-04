@@ -18,13 +18,13 @@ jobs:
         uses: actions/checkout@v4  # Actualiza a actions/checkout@v4
 
       - name: Cache Poetry cache
-        uses: actions/cache@v5  # Actualiza a actions/cache@v5
+        uses: actions/cache@v4  # Actualiza a actions/cache@v4
         with:
           path: ~/.cache/pypoetry
           key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
 
       - name: Cache Packages
-        uses: actions/cache@v5  # Actualiza a actions/cache@v5
+        uses: actions/cache@v4  # Actualiza a actions/cache@v4
         with:
           path: ~/.local
           key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('taxi_demand_predictor/.github/workflows/*.yml') }}
