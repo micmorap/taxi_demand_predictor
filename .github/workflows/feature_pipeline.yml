@@ -40,7 +40,7 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
-        run: poetry install
+        run: poetry install --file /taxi_demand_predictor/taxi_demand_predictor/pyproject.toml
         
       - name: Run feature generation script
         env: 
