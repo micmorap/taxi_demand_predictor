@@ -2,8 +2,7 @@ name: hourly-taxi-demand-feature-pipeline
 
 on:
   schedule:
-  - cron: '30 * * * *'
-
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 env:
@@ -12,44 +11,39 @@ env:
   POETRY_URL: https://install.python-poetry.org
 
 jobs:
-
   feature_pipeline:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4  # Actualiza a actions/checkout@v4
 
-    # Poetry cache depends on OS, Python version and Poetry version.
-    - name: Cache Poetry cache
-      uses: actions/cache@v3
+      - name: Cache Poetry cache
+        uses: actions/cache@v5  # Actualiza a actions/cache@v5
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
 
-      with:
-        path: ~/.cache/pypoetry
-        key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
-    
-    # virtualenv cache should depends on OS, Python version and `poetry.lock` (and optionally workflow files).
-    - name: Cache Packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.local
-        key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('taxi_demand_predictor/.github/workflows/*.yml') }}
-    
-    - name: Set up Python ${{ env.PYTHON_VERSION }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-    
-    - name: Install Poetry
-      run: |
-        curl -sSL ${{ env.POETRY_URL }} | python - --version ${{ env.POETRY_VERSION }}
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-    
-    - name: Install Dependencies
-      run: poetry install
+      - name: Cache Packages
+        uses: actions/cache@v5  # Actualiza a actions/cache@v5
+        with:
+          path: ~/.local
+          key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('taxi_demand_predictor/.github/workflows/*.yml') }}
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v2  # Actualiza a actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL ${{ env.POETRY_URL }} | python - --version ${{ env.POETRY_VERSION }}
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Dependencies
+        run: poetry install
         
-    - name: Run feature generation script
-      env: 
-        HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
-        HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-      run: poetry run jupyter nbconvert --to notebook --execute /taxi_demand_predictor/notebooks/12_feature_pipeline.ipynb
-  
+      - name: Run feature generation script
+        env: 
+          HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: poetry run jupyter nbconvert --to notebook --execute /taxi_demand_predictor/notebooks/12_feature_pipeline.ipynb
