@@ -30,7 +30,7 @@ jobs:
           key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('taxi_demand_predictor/.github/workflows/*.yml') }}
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v4.  # Actualiza a actions/setup-python@v2
+        uses: actions/setup-python@latest  # Actualiza a actions/setup-python@v2
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
