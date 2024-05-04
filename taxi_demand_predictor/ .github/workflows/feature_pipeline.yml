@@ -1,8 +1,8 @@
-name: feature-pipeline
+name: hourly-taxi-demand-feature-pipeline
 
 on:
   schedule:
-  - cron: '0 * * * *'
+  - cron: '30 * * * *'
 
   workflow_dispatch:
 
@@ -32,7 +32,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.local
-        key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
+        key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('taxi_demand_predictor/.github/workflows/*.yml') }}
     
     - name: Set up Python ${{ env.PYTHON_VERSION }}
       uses: actions/setup-python@v3
@@ -51,5 +51,5 @@ jobs:
       env: 
         HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
         HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-      run: make features
+      run: poetry run jupyter nbconvert --to notebook --execute /taxi_demand_predictor/notebooks/12_feature_pipeline.ipynb
   
